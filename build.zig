@@ -52,7 +52,7 @@ pub fn build(b: *std.Build) !void {
 
     const build_lua = b.option(bool, "lua", "Build Zigdown as a Lua module") orelse false;
     const build_query_fetcher = b.option(bool, "build-query-fetcher", "Build the TreeSitter query fetcher") orelse false;
-    const build_test_exes = b.option(bool, "build-test-exes", "Build the custom test executables") orelse false;
+    //const build_test_exes = b.option(bool, "build-test-exes", "Build the custom test executables") orelse false;
 
     // Add an option to list the set of TreeSitter parsers to statically link into the build
     // This should match the list of parsers defined below and added to the 'queries' module
@@ -249,7 +249,8 @@ pub fn build(b: *std.Build) !void {
     addTest(b, "test-all", "Run all unit tests", "src/test.zig", test_opts);
 
     // Add custom test executables
-    if (build_test_exes) {
+    // Always build test executables for now
+    {
         const parser_test_config = ExeConfig{
             .name = "parser_test",
             .build_cmd = "build-parser-test",
