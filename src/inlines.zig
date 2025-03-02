@@ -60,6 +60,13 @@ pub const InlineData = union(InlineType) {
                 printIndent(depth);
                 std.debug.print("Inline {s}\n", .{@tagName(self)});
             },
+            .link => |link| {
+                printIndent(depth);
+                std.debug.print("Link:\n", .{});
+                for (link.text.items) |text| {
+                    text.print(depth + 1);
+                }
+            },
             inline else => |item| item.print(depth),
         }
     }
@@ -100,20 +107,12 @@ pub const Text = struct {
     alloc: ?Allocator = null,
     style: zd.TextStyle = zd.TextStyle{},
     text: []const u8 = undefined, // The Text is assumed to own the string if 'alloc' is not null
+    line: usize = 0, // Line number where this text appears
+    col: usize = 0, // Column number where this text starts
 
     pub fn print(self: Text, depth: u8) void {
         printIndent(depth);
-        std.debug.print("Text: '{s}' [Style: ", .{self.text});
-        std.debug.print("fg: {s}, bg: {s} ", .{ @tagName(self.style.fg_color), @tagName(self.style.bg_color) });
-        inline for (@typeInfo(zd.TextStyle).Struct.fields) |field| {
-            const T: type = @TypeOf(@field(self.style, field.name));
-            if (T == bool) {
-                if (@field(self.style, field.name)) {
-                    std.debug.print("{s}", .{field.name});
-                }
-            }
-        }
-        std.debug.print("]\n", .{});
+        std.debug.print("Text: '{s}' [line: {d}, col: {d}]\n", .{ self.text, self.line, self.col });
     }
 
     pub fn deinit(self: *Text) void {
@@ -150,7 +149,7 @@ pub const Link = struct {
 
     pub fn print(self: Link, depth: u8) void {
         printIndent(depth);
-        std.debug.print("Link to {s}\n", .{self.url});
+        std.debug.print("Link:\n", .{});
         for (self.text.items) |text| {
             text.print(depth + 1);
         }
@@ -198,7 +197,10 @@ pub const Image = struct {
 
     pub fn print(self: Image, depth: u8) void {
         printIndent(depth);
-        std.debug.print("Image: {s}\n", .{self.src});
+        std.debug.print("Image:\n", .{});
+        for (self.alt.items) |text| {
+            text.print(depth + 1);
+        }
     }
 };
 
@@ -208,9 +210,9 @@ pub const Autolink = struct {
     url: []const u8,
     heap_url: bool = false, // Whether the url string has been heap-allocated
 
-    pub fn print(self: Autolink, depth: u8) void {
+    pub fn print(_: Autolink, depth: u8) void {
         printIndent(depth);
-        std.debug.print("Autolink: {s}\n", .{self.url});
+        std.debug.print("Autolink\n", .{});
     }
 
     pub fn deinit(self: *Autolink) void {

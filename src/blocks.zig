@@ -264,6 +264,26 @@ pub const Leaf = struct {
         });
 
         self.content.print(depth + 1);
+
+        // For links and other structured inline elements, we want to show their structure
+        if (self.inlines.items.len > 0) {
+            printIndent(depth + 1);
+            std.debug.print("Inline content:\n", .{});
+            for (self.inlines.items) |inline_item| {
+                inline_item.print(depth + 2);
+            }
+        } else {
+            // Print each token with its line and column numbers
+            for (self.raw_contents.items) |token| {
+                printIndent(depth + 1);
+                std.debug.print("Token: {s}, text: \"{s}\", line: {d}, col: {d}\n", .{
+                    zd.typeStr(token.kind),
+                    token.text,
+                    token.src.row,
+                    token.src.col,
+                });
+            }
+        }
     }
 };
 

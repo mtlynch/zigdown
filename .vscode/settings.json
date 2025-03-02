@@ -1,3 +1,4 @@
 {
-  "workbench.statusBar.visible": true
+  "workbench.statusBar.visible": true,
+  "zig.zls.enabled": "on"
 }
