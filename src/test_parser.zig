@@ -162,16 +162,40 @@ fn printAST(root: zd.Block) void {
 
 pub fn main() !void {
     const text1: []const u8 =
-        \\# Overview
+        \\# Heading 1
+        \\## Heading 2
+        \\### Heading 3
+        \\#### Heading 4
         \\
-        \\Hey there.
+        \\Foo **Bar _baz_**. ~Hi!~
+        \\> > Double-nested ~Quote~
+        \\> > ...which supports multiple lines, which will be wrapped to the appropriate width by the renderer.
+        \\> Note that lazy continuation lines allow this to be included in the previous child.
+        \\>
+        \\> This should work, too...
+        \\> - And so should this!
+        \\>
+        \\> foo
         \\
-        \\Click: [Click Me!](https://example.com)
+        \\Image: ![Some Image](../test/zig-zero.png)
         \\
-        \\ * Item 1
-        \\ * Item 2
+        \\Link: [Click Me!](https://google.com)
         \\
-        \\Good day!
+        \\1. Numlist
+        \\2. Foobar
+        \\   - With child list
+        \\   - this should work?
+        \\      1. and this?
+        \\      2. Wohooo!!!
+        \\1. 2nd item
+        \\
+        \\- Another list
+        \\- more items
+        \\```c++
+        \\  Some raw code here...
+        \\And some more here.
+        \\```
+        \\para
     ;
     const text = text1;
 
